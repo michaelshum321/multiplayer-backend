@@ -1,12 +1,17 @@
 package main
 
-import(
+import (
 	"log"
-	"multiplayer-backend/world")
+	"multiplayer-backend/world"
+	"time"
+)
 
 func main() {
 	var world = world.NewWorld(5)
-	log.Println("old world: ", world, world.GetGrid())
-	world.DoSomething()
-	log.Println("new world: ", world, world.GetGrid())
+	go world.StartTime()
+	log.Println("Main started world")
+	time.Sleep(time.Minute/6)
+	world.Stop()
+	time.Sleep(time.Second)
+	log.Println("exiting Main now")
 }

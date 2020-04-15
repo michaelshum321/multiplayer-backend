@@ -3,26 +3,22 @@ package world
 import "log"
 
 type Grid struct{
-	grid [][]Node
+	nodes [][]Node
+	size uint32
 }
 
-var initData = [][]Node{
-	[]Node{
-		Node{whatever: 5},
-	},
-	[]Node{
-		Node{whatever:123},
-	},
-}
-
-func newGrid(size int) (grid *Grid){
-	outerGrid := make([][]Node, size, size)
-	for i := range outerGrid {
-		outerGrid[i]= make([]Node, size, size)
+func init2DNode(size uint32) (output [][]Node) {
+	output = make([][]Node, size, size)
+	for i := range output {
+		output[i]= make([]Node, size, size)
 	}
+	return
+}
+func newGrid(size uint32) (grid *Grid){
 	grid = &Grid{
-		grid: outerGrid,
+		nodes: init2DNode(size),
+		size: size,
 	}
-	log.Println("created new grid with ", initData)
+	log.Println("created new nodes with that is ", len(grid.nodes), " x ", len(grid.nodes[0]))
 	return
 }
