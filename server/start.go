@@ -2,14 +2,15 @@ package main
 
 import (
 	"log"
-	"multiplayer-backend/world"
+	"multiplayer-backend/game"
 	"time"
 )
 
 func main() {
-	var world = world.NewWorld(5)
+	var world = game.NewWorld(5)
 	go world.StartTime()
-	log.Println("Main started world")
+	log.Println("Main started game")
+
 	time.Sleep(time.Minute/6)
 	world.Stop()
 	time.Sleep(time.Second)
