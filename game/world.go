@@ -9,7 +9,7 @@ import (
 type World struct {
 	grid   *Grid
 	moment *Timer
-	Actions
+	actions Actions
 	objects map[string]entity.ModelI
 }
 
@@ -23,8 +23,12 @@ func (world *World) GetGrid() Grid {
 	return *(world.grid)
 }
 
+func (world *World) AddCommand(command Command) {
+	world.actions.addCommand(command)
+}
+
 func (world *World) Update() {
-	queue := world.Actions.GetQueue()
+	queue := world.actions.queue
 	select {
 	case cmd, ok := <-queue:
 		if ok {
@@ -39,8 +43,25 @@ func (world *World) Update() {
 }
 
 func (world *World) runCommand(command Command) {
-	model := world.objects[command.modelId]
-	world.grid
+	log.Println("Running command ", command)
+	model := world.objects[command.ModelId]
+	x, y := model.GetPosition()
+	switch command.Dir {
+	case Up:
+		world.grid.move(&model, x-1, y)
+
+	case Down:
+		world.grid.move(&model, x+1, y)
+
+	case Left:
+		world.grid.move(&model, x, y-1)
+
+	case Right:
+		world.grid.move(&model, x, y+1)
+
+	default:
+		log.Fatal("world could not execute command: ", command)
+	}
 }
 
 func (world *World) StartTime() {
@@ -51,15 +72,15 @@ func (world *World) Stop() {
 	world.moment.sendStop()
 }
 
-func (world *World) NewPerson(initX GridType, initY GridType) {
+func (world *World) NewPerson(initX entity.GridType, initY entity.GridType) {
 	var model entity.ModelI = entity.NewPerson(initX, initY)
 	world.objects[strconv.Itoa(model.GetId())] = model
 }
 
-func NewWorld(size GridType) (world *World) {
+func NewWorld(size entity.GridType) (world *World) {
 	world = &World{
 		grid:    newGrid(size),
-		Actions: Actions{queue: make(chan Command, 100)},
+		actions: Actions{queue: make(chan Command, 100)},
 		objects: make(map[string]entity.ModelI),
 	}
 	timer := &Timer{

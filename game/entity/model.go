@@ -1,30 +1,26 @@
 package entity
 
-import (
-	"multiplayer-backend/game"
-)
-
 var counter = 0
 
 type ModelS struct {
-	size game.GridType
-	x    game.GridType
-	y    game.GridType
+	size GridType
+	x    GridType
+	y    GridType
 	id   int
 }
 
 type ModelI interface {
-	GetSize() game.GridType
+	GetSize() GridType
 	GetId() int
-	GetPosition() (game.GridType, game.GridType)
+	GetPosition() (GridType, GridType)
 }
 
 
-func (model *ModelS) GetSize() game.GridType {
+func (model *ModelS) GetSize() GridType {
 	return model.size
 }
 
-func (model *ModelS) GetPosition() (game.GridType, game.GridType) {
+func (model *ModelS) GetPosition() (GridType, GridType) {
 	return model.x, model.y
 }
 
@@ -38,7 +34,7 @@ func getAndIncIdCounter() int {
 	return id
 }
 
-func newModel(initX game.GridType, initY game.GridType, initSize game.GridType) ModelS {
+func newModel(initX GridType, initY GridType, initSize GridType) ModelS {
 	return ModelS{
 		id:   getAndIncIdCounter(),
 		x:    initX,
