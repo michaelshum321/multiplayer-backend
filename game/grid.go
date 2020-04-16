@@ -10,6 +10,11 @@ type Grid struct {
 	size  entity.GridType
 }
 
+func (grid *Grid) PrintBoard() {
+	for idx, i := range grid.nodes{
+		log.Println(idx, i)
+	}
+}
 func (grid *Grid) move(modelPtr *entity.ModelI, newX entity.GridType, newY entity.GridType) {
 	if !grid.canMove(modelPtr, newX, newY) {
 		return
@@ -20,33 +25,35 @@ func (grid *Grid) move(modelPtr *entity.ModelI, newX entity.GridType, newY entit
 	x, y := model.GetPosition()
 
 	log.Println("moving ", model.GetId()," from ", x,"x",y," to ", newX,"x", newY)
-	log.Println(grid.nodes)
+	grid.PrintBoard()
 	// TODO: optimize me :D
 	// remove nodes at old position
-	for i := entity.GridType(0); i < size; i++ {
-		minX, _ := getMinMax(x, size, grid.size)
+	minX, _ := getMinMax(x, size, grid.size)
+	for i := range nodes[minX:minX+size] {
 		minY, maxY := getMinMax(y, size, grid.size)
-		slice := nodes[minX+i][minY : maxY+1]
-		for j := range slice {
-			slice[j].elem = nil
+		rowSlice := nodes[entity.GridType(i)+minX][minY:maxY+1]
+		for j := range rowSlice {
+			rowSlice[j].elem = nil
 		}
 	}
 
 	// set nodes at new position
-	for i := entity.GridType(0); i < size; i++ {
-		minX, _ := getMinMax(newX, size, grid.size)
+	minX, _ = getMinMax(newX, size, grid.size)
+	for  i := range nodes[minX:minX+size] {
 		minY, maxY := getMinMax(newY, size, grid.size)
-		slice := nodes[minX+i][minY : maxY+1]
-		for j := range slice {
-			slice[j].elem = modelPtr
+		rowSlice := nodes[entity.GridType(i)+minX][minY:maxY+1]
+		for j := range rowSlice {
+			rowSlice[j].elem = modelPtr
 		}
 	}
 
-	log.Println("new grid", grid.nodes)
+	model.SetPosition(newX, newY)
+	log.Println("new grid")
+	grid.PrintBoard()
 }
 
 func getMinMax(in entity.GridType, size entity.GridType, maxIn entity.GridType) (entity.GridType, entity.GridType) {
-	offset := getOffset(in)
+	offset := getOffset(size)
 	radius := size / 2
 	var min entity.GridType
 	var max entity.GridType
@@ -84,9 +91,9 @@ func getOffsetModel(model *entity.ModelI) entity.GridType {
 
 func getOffset(in entity.GridType) entity.GridType {
 	if in%2 == 0 {
-		return 0
+		return 1
 	}
-	return 1
+	return 0
 }
 
 //func behindOffset(in GridType, radius GridType, offset GridType) GridType {

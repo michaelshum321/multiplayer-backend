@@ -19,7 +19,6 @@ func (timer *Timer) startTicking() {
 			return
 		}
 		timer.world.Update()
-
 	}
 }
 

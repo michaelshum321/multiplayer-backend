@@ -2,7 +2,7 @@ package entity
 
 const PersonSize = 3
 type Person struct {
-	ModelS
+	*ModelS
 }
 
 func (p Person) GetSize() GridType {
@@ -14,7 +14,13 @@ func (p Person) GetId() int {
 }
 
 func (p Person) GetPosition() (GridType, GridType) {
-	return p.GetPosition()
+	modelPtr := p.ModelS
+	return modelPtr.GetPosition()
+}
+
+func (p Person) SetPosition(newX GridType, newY GridType) {
+	modelPtr := p.ModelS
+	modelPtr.SetPosition(newX, newY)
 }
 
 func NewPerson(initX GridType, initY GridType) Person {

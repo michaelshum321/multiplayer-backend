@@ -13,6 +13,7 @@ type ModelI interface {
 	GetSize() GridType
 	GetId() int
 	GetPosition() (GridType, GridType)
+	SetPosition(GridType, GridType)
 }
 
 
@@ -24,6 +25,10 @@ func (model *ModelS) GetPosition() (GridType, GridType) {
 	return model.x, model.y
 }
 
+func (model *ModelS) SetPosition(newX GridType, newY GridType) {
+	model.x = newX
+	model.y = newY
+}
 func (model *ModelS) GetId() int {
 	return model.id
 }
@@ -34,8 +39,8 @@ func getAndIncIdCounter() int {
 	return id
 }
 
-func newModel(initX GridType, initY GridType, initSize GridType) ModelS {
-	return ModelS{
+func newModel(initX GridType, initY GridType, initSize GridType) *ModelS {
+	return &ModelS{
 		id:   getAndIncIdCounter(),
 		x:    initX,
 		y:    initY,

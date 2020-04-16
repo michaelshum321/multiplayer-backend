@@ -9,7 +9,6 @@ import (
 func main() {
 	var world = game.NewWorld(10)
 	go world.StartTime()
-	log.Println("Main started game")
 	world.NewPerson(2,2) // id 0
 	go world.AddCommand(game.Command{ModelId: "0", Dir: game.Right})
 	go world.AddCommand(game.Command{ModelId: "0", Dir: game.Left})

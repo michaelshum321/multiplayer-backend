@@ -65,6 +65,7 @@ func (world *World) runCommand(command Command) {
 }
 
 func (world *World) StartTime() {
+	log.Println("Main started game")
 	world.moment.startTicking()
 }
 
@@ -75,6 +76,7 @@ func (world *World) Stop() {
 func (world *World) NewPerson(initX entity.GridType, initY entity.GridType) {
 	var model entity.ModelI = entity.NewPerson(initX, initY)
 	world.objects[strconv.Itoa(model.GetId())] = model
+	world.grid.move(&model, initX, initY)
 }
 
 func NewWorld(size entity.GridType) (world *World) {
