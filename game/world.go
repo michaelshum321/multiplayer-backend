@@ -32,13 +32,13 @@ func (world *World) Update() {
 	select {
 	case cmd, ok := <-queue:
 		if ok {
-			log.Println("channel has something")
+			//log.Println("channel has something")
 			world.runCommand(cmd)
 		} else {
 			log.Println("channel dead")
 		}
-	default:
-		log.Println("no value")
+	//default:
+		//log.Println("no value")
 	}
 }
 

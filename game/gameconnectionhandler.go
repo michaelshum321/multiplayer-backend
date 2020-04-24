@@ -1,10 +1,9 @@
 package game
 
 import (
-	"bufio"
 	"encoding/json"
+	"github.com/gorilla/websocket"
 	"log"
-	"net"
 )
 
 type GameConnectionHandlerI interface {
@@ -19,18 +18,20 @@ type GameConnectionHandler struct {
 	GameConnectionHandlerS
 }
 
-func (g GameConnectionHandler) HandleConnection(c net.Conn) {
+func (g GameConnectionHandler) HandleConnection(c websocket.Conn) {
 	log.Println("Serving", c.RemoteAddr().String())
 	defer c.Close()
 	for {
-		netData, err := bufio.NewReader(c).ReadBytes('\n')
+		_, message, err := c.ReadMessage()
+		//netData, err := bufio.NewReader(c).ReadBytes('\n')
 		if err != nil {
 			log.Println("Error reading from connection", err)
 			return
 		}
-		log.Println("received", string(netData), "from", c.RemoteAddr().String())
-		g.world.AddCommand(g.ParseContent(netData))
-		c.Write([]byte("1"))
+		log.Println("received", string(message), "from", c.RemoteAddr().String())
+		g.world.AddCommand(g.ParseContent(message))
+		c.WriteMessage(websocket.TextMessage, []byte{1})
+		//c.Write([]byte("1"))
 	}
 }
 

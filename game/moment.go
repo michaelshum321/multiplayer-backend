@@ -24,7 +24,6 @@ func (timer *Timer) startTicking() {
 
 func (timer *Timer) tick() {
 	timer.timeElapsed++
-	log.Println("ticked @", timer.timeElapsed)
 }
 
 func (timer *Timer) sendStop() {

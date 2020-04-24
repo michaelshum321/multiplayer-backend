@@ -11,7 +11,7 @@ func main() {
 	go worldPtr.StartTime()
 	worldPtr.NewPerson(2,2) // id 0
 	var connHandler = game.NewGameConnectionHandler(worldPtr)
-	var tcpServer = NewTcpServer(connHandler)
+	var tcpServer = NewWSServer(connHandler)
 	tcpServer.Start()
 	// go worldPtr.AddCommand(game.Command{ModelId: "0", Dir: game.Right})
 	// go worldPtr.AddCommand(game.Command{ModelId: "0", Dir: game.Left})
