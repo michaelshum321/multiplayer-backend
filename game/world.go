@@ -32,13 +32,10 @@ func (world *World) Update() {
 	select {
 	case cmd, ok := <-queue:
 		if ok {
-			//log.Println("channel has something")
 			world.runCommand(cmd)
 		} else {
 			log.Println("channel dead")
 		}
-	//default:
-		//log.Println("no value")
 	}
 }
 
@@ -82,7 +79,7 @@ func (world *World) NewPerson(initX entity.GridType, initY entity.GridType) {
 func NewWorld(size entity.GridType) (world *World) {
 	world = &World{
 		grid:    newGrid(size),
-		actions: Actions{queue: make(chan Command, 100)},
+		actions: Actions{queue: make(chan Command, 5)},
 		objects: make(map[string]entity.ModelI),
 	}
 	timer := &Timer{

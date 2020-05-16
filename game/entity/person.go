@@ -28,9 +28,3 @@ func NewPerson(initX GridType, initY GridType) Person {
 		ModelS: newModel(initX, initY, PersonSize),
 	}
 }
-
-func (person *Person) Move(newX GridType, newY GridType) {
-	person.x = newX
-	person.y = newY
-}
-
