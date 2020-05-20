@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
 	"log"
+	"multiplayer-backend/game/entity"
 	"strconv"
 )
 
@@ -24,6 +25,8 @@ type GameConnectionHandler struct {
 
 type PlayerIdResponse struct {
 	PlayerID int
+	X        entity.GridType
+	Y        entity.GridType
 }
 
 func (g GameConnectionHandler) HandleConnection(c websocket.Conn) {
@@ -34,8 +37,15 @@ func (g GameConnectionHandler) HandleConnection(c websocket.Conn) {
 		playerId, ok := g.connections[connectionId]
 		if !ok {
 			log.Println("new cx in gameConnHandler", connectionId)
-			newPlayerId := g.world.NewPerson(2, 2)
-			playerIdJson, _ := json.Marshal(&PlayerIdResponse{PlayerID: newPlayerId})
+			startPos := entity.GridType(len(g.connections) * 2)
+			newPlayerId := g.world.NewPerson(startPos, startPos)
+			playerIdJson, _ := json.Marshal(
+				&PlayerIdResponse{
+					PlayerID: newPlayerId,
+					X:        startPos,
+					Y:        startPos,
+				})
+
 			c.WriteMessage(
 				websocket.TextMessage,
 				playerIdJson,
@@ -56,6 +66,8 @@ func (g GameConnectionHandler) HandleConnection(c websocket.Conn) {
 		// TODO: remove modelId from front-end response & Command here
 		cmd.ModelId = strconv.Itoa(playerId)
 		g.world.AddCommand(cmd)
+
+		// TODO: remove me, use a queue of PlayerIdResponse and send messages via that
 		c.WriteMessage(websocket.TextMessage, []byte(":D"))
 	}
 }
