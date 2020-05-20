@@ -14,19 +14,20 @@ type ServerI interface {
 	Start(http.ResponseWriter, *http.Request)
 }
 
-type ConnectionHandlerI interface{
+type ConnectionHandlerI interface {
 	HandleConnection(conn websocket.Conn)
 }
 
 type ServerS struct {
 	connectionHandler ConnectionHandlerI
 }
-type WebsocketServer struct{
+type WebsocketServer struct {
 	ServerS
 }
+
 var upgrader = websocket.Upgrader{} // use default options
 
-func ( ws WebsocketServer) Home(w http.ResponseWriter, r *http.Request) {
+func (ws WebsocketServer) Home(w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -50,6 +51,7 @@ func NewWSServer(connHandler ConnectionHandlerI) WebsocketServer {
 		},
 	}
 }
+
 //type TcpServer struct {
 //	ServerS
 //}

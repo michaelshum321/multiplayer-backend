@@ -8,8 +8,6 @@ import (
 
 func main() {
 	var worldPtr = game.NewWorld(10)
-	go worldPtr.StartTime()
-	worldPtr.NewPerson(2,2) // id 0
 	var connHandler = game.NewGameConnectionHandler(worldPtr)
 	var tcpServer = NewWSServer(connHandler)
 	tcpServer.Start()

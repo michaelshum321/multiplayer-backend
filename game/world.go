@@ -70,10 +70,11 @@ func (world *World) Stop() {
 	world.moment.sendStop()
 }
 
-func (world *World) NewPerson(initX entity.GridType, initY entity.GridType) {
+func (world *World) NewPerson(initX entity.GridType, initY entity.GridType) int {
 	var model entity.ModelI = entity.NewPerson(initX, initY)
 	world.objects[strconv.Itoa(model.GetId())] = model
 	world.grid.move(&model, initX, initY)
+	return model.GetId()
 }
 
 func NewWorld(size entity.GridType) (world *World) {
