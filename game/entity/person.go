@@ -1,6 +1,6 @@
 package entity
 
-const PersonSize = 3
+const PersonSize = 1
 type Person struct {
 	*ModelS
 }

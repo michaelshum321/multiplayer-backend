@@ -18,7 +18,7 @@ const (
 // for now, just do 'Move'
 type Command struct {
 	ModelId string
-	Dir     Direction
+	Direction     Direction
 }
 
 func (actions *Actions) addCommand(command Command) {

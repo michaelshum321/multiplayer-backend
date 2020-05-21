@@ -17,6 +17,7 @@ func (grid *Grid) PrintBoard() {
 }
 func (grid *Grid) move(modelPtr *entity.ModelI, newX entity.GridType, newY entity.GridType) {
 	if !grid.canMove(modelPtr, newX, newY) {
+		log.Println("cannot move ", (*modelPtr).GetId(), " to ", newX,"x",newY)
 		return
 	}
 	nodes := grid.nodes
@@ -82,7 +83,6 @@ func (grid *Grid) canMove(model *entity.ModelI, newX entity.GridType, newY entit
 
 	return validBehind(newX, radius, offset) && validAhead(newX, grid.size, radius) &&
 		validBehind(newY, radius, offset) && validAhead(newY, grid.size, radius)
-
 }
 
 func getOffsetModel(model *entity.ModelI) entity.GridType {
@@ -103,11 +103,11 @@ func getOffset(in entity.GridType) entity.GridType {
 //	return 0
 //}
 func validBehind(in entity.GridType, radius entity.GridType, offset entity.GridType) bool {
-	return in-radius-offset >= 0 && in-radius-offset < in
+	return in-radius-offset >= 0 && in-radius-offset <= in
 }
 
 func validAhead(in entity.GridType, maxIn entity.GridType, radius entity.GridType) bool {
-	return in+radius < maxIn && in+radius > in
+	return in+radius < maxIn && in+radius >= in
 }
 
 func init2DNode(size entity.GridType) (output [][]Node) {

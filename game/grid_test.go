@@ -46,3 +46,21 @@ func TestMoveSimple(t *testing.T) {
 		}
 	}
 }
+
+func TestMoveEdges(t *testing.T) {
+	grid := newGrid(10)
+	var person entity.ModelI = entity.NewPerson(0,0)
+
+	expectedX := entity.GridType(1)
+	expectedY := entity.GridType(0)
+	grid.move(&person, expectedX,expectedY) // move to the right
+
+	actualX, actualY := person.GetPosition()
+	if actualX != expectedX {
+		t.Errorf("x should be %d but is %d", expectedX, actualX)
+	}
+
+	if actualY != expectedY {
+		t.Errorf("y should be %d but is %d", expectedY, actualY)
+	}
+}

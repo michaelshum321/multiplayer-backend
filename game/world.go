@@ -43,7 +43,7 @@ func (world *World) runCommand(command Command) {
 	log.Println("Running command ", command)
 	model := world.objects[command.ModelId]
 	x, y := model.GetPosition()
-	switch command.Dir {
+	switch command.Direction {
 	case Up:
 		world.grid.move(&model, x-1, y)
 
