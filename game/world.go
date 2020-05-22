@@ -7,10 +7,11 @@ import (
 )
 
 type World struct {
-	grid   *Grid
-	moment *Timer
-	actions Actions
-	objects map[string]entity.ModelI
+	grid             *Grid
+	moment           *Timer
+	actions          Actions
+	objects          map[string]entity.ModelI
+	broadcastChannel chan PlayerIdResponse
 }
 
 //func (world *World) doSomething() {
@@ -43,21 +44,27 @@ func (world *World) runCommand(command Command) {
 	log.Println("Running command ", command)
 	model := world.objects[command.ModelId]
 	x, y := model.GetPosition()
+	var didMove bool
 	switch command.Direction {
 	case Up:
-		world.grid.move(&model, x-1, y)
+		didMove = world.grid.move(&model, x, y-1)
 
 	case Down:
-		world.grid.move(&model, x+1, y)
+		didMove = world.grid.move(&model, x, y+1)
 
 	case Left:
-		world.grid.move(&model, x, y-1)
+		didMove = world.grid.move(&model, x-1, y)
 
 	case Right:
-		world.grid.move(&model, x, y+1)
+		didMove = world.grid.move(&model, x+1, y)
 
 	default:
 		log.Fatal("world could not execute command: ", command)
+	}
+
+	if didMove {
+		newX, newY := model.GetPosition()
+		world.broadcastChannel <- *NewPlayerIdResponse(model.GetId(), newX, newY)
 	}
 }
 
@@ -79,9 +86,10 @@ func (world *World) NewPerson(initX entity.GridType, initY entity.GridType) int 
 
 func NewWorld(size entity.GridType) (world *World) {
 	world = &World{
-		grid:    newGrid(size),
-		actions: Actions{queue: make(chan Command, 5)},
-		objects: make(map[string]entity.ModelI),
+		grid:             newGrid(size),
+		actions:          Actions{queue: make(chan Command, 5)},
+		objects:          make(map[string]entity.ModelI),
+		broadcastChannel: make(chan PlayerIdResponse, 5),
 	}
 	timer := &Timer{
 		world, false, 0,

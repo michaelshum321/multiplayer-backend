@@ -15,7 +15,7 @@ type ServerI interface {
 }
 
 type ConnectionHandlerI interface {
-	HandleConnection(conn websocket.Conn)
+	HandleConnection(conn *websocket.Conn)
 }
 
 type ServerS struct {
@@ -36,7 +36,7 @@ func (ws WebsocketServer) Home(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 	for {
-		ws.ServerS.connectionHandler.HandleConnection(*c)
+		ws.ServerS.connectionHandler.HandleConnection(c)
 	}
 }
 func (ws WebsocketServer) Start() {

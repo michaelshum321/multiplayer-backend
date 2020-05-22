@@ -11,46 +11,45 @@ type Grid struct {
 }
 
 func (grid *Grid) PrintBoard() {
-	for idx, i := range grid.nodes{
+	for idx, i := range grid.nodes {
 		log.Println(idx, i)
 	}
 }
-func (grid *Grid) move(modelPtr *entity.ModelI, newX entity.GridType, newY entity.GridType) {
+func (grid *Grid) move(modelPtr *entity.ModelI, newX entity.GridType, newY entity.GridType) bool {
 	if !grid.canMove(modelPtr, newX, newY) {
-		log.Println("cannot move ", (*modelPtr).GetId(), " to ", newX,"x",newY)
-		return
+		log.Println("cannot move ", (*modelPtr).GetId(), " to ", newX, "x", newY)
+		return false
 	}
 	nodes := grid.nodes
 	model := *modelPtr
 	size := model.GetSize()
 	x, y := model.GetPosition()
 
-	log.Println("moving ", model.GetId()," from ", x,"x",y," to ", newX,"x", newY)
-	grid.PrintBoard()
+	log.Println("moving ", model.GetId(), " from ", x, "x", y, " to ", newX, "x", newY)
 	// TODO: optimize me :D
 	// remove nodes at old position
-	minX, _ := getMinMax(x, size, grid.size)
-	for i := range nodes[minX:minX+size] {
-		minY, maxY := getMinMax(y, size, grid.size)
-		rowSlice := nodes[entity.GridType(i)+minX][minY:maxY+1]
+	minY, _ := getMinMax(y, size, grid.size)
+	for i := range nodes[minY : minY+size] {
+		minX, maxX := getMinMax(x, size, grid.size)
+		rowSlice := nodes[entity.GridType(i)+minY][minX : maxX+1]
 		for j := range rowSlice {
 			rowSlice[j].elem = nil
 		}
 	}
 
 	// set nodes at new position
-	minX, _ = getMinMax(newX, size, grid.size)
-	for  i := range nodes[minX:minX+size] {
-		minY, maxY := getMinMax(newY, size, grid.size)
-		rowSlice := nodes[entity.GridType(i)+minX][minY:maxY+1]
+	minY, _ = getMinMax(newY, size, grid.size)
+	for i := range nodes[minY : minY+size] {
+		minX, maxX := getMinMax(newX, size, grid.size)
+		rowSlice := nodes[entity.GridType(i)+minY][minX : maxX+1]
 		for j := range rowSlice {
 			rowSlice[j].elem = modelPtr
 		}
 	}
 
 	model.SetPosition(newX, newY)
-	log.Println("new grid")
 	grid.PrintBoard()
+	return true
 }
 
 func getMinMax(in entity.GridType, size entity.GridType, maxIn entity.GridType) (entity.GridType, entity.GridType) {
